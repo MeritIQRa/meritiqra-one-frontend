@@ -2,8 +2,8 @@ const {JSDOM}=require('jsdom');
 const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'http://localhost'});
 global.window=dom.window;global.document=dom.window.document;global.HTMLElement=dom.window.HTMLElement;Object.defineProperty(global,'navigator',{value:dom.window.navigator,configurable:true});global.IS_REACT_ACT_ENVIRONMENT=true;
 const React=require('react'),{render,screen,fireEvent,waitFor,cleanup}=require('@testing-library/react'),assert=require('node:assert/strict'),fs=require('fs'),ts=require('typescript');
-const code=ts.transpileModule(fs.readFileSync('app/academic-entry.tsx','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2020}}).outputText;
-const m={exports:{}};new Function('require','module','exports',code)(require,m,m.exports);const Component=m.exports.AcademicEntry;
+for(const ext of ['.ts','.tsx'])require.extensions[ext]=(module,path)=>module._compile(ts.transpileModule(fs.readFileSync(path,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2020}}).outputText,path);
+const Component=require('../app/academic-entry.tsx').AcademicEntry;
 const base={schools:[{id:'s',name:'Westbridge'}],years:[{id:'y',schoolId:'s',name:'2026-27'}],classes:[{id:'c',schoolId:'s',yearId:'y',name:'Class X',section:'A'}],students:[{id:'a',schoolId:'s',classId:'c',name:'Aarav',admissionNumber:'001'},{id:'b',schoolId:'s',classId:'c',name:'Meera',admissionNumber:'002'}],subjects:[{id:'math',schoolId:'s',yearId:'y',name:'Mathematics'}],'exam-requests':[{id:'e',schoolId:'s',yearId:'y',academicYear:'2026-27',classId:'c',title:'Annual',examType:'Annual Examination',mode:'OFFLINE'}],'exam-results':[]};
 function select(){for(const [label,v] of [['1. Academic year','y'],['2. Class / section','c'],['3. Examination','e'],['4. Subject','math']])fireEvent.change(screen.getByLabelText(label),{target:{value:v}});}
 (async()=>{

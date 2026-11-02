@@ -6,9 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node scripts/check-academic-entry.cjs && node scripts/check-performance-report.cjs"
+    "test": "node scripts/check-academic-entry.cjs && node scripts/check-performance-report.cjs && node scripts/check-register-import.cjs && node scripts/check-attendance-register.cjs"
   },
   "dependencies": {
+    "exceljs": "^4.4.0",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.9",
     "lucide-react": "^0.468.0",

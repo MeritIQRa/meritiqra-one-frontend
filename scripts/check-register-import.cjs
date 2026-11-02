@@ -1,0 +1,10 @@
+const fs=require('fs'),ts=require('typescript'),assert=require('node:assert/strict');
+const m={exports:{}};new Function('require','module','exports',ts.transpileModule(fs.readFileSync('app/register-import.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText)(require,m,m.exports);
+const {parseCsv,validateImport,validateWorkbookSize}=m.exports,students=[{id:'a',name:'Aarav',admissionNumber:'001'},{id:'b',name:'Meera',admissionNumber:'002'}];
+let r=validateImport(parseCsv('Admission number,Marks,Status,Remarks\n001,0,RECORDED,"Needs practice, fractions"\n002,,ABSENT,Absent'),students,'marks',100);assert.equal(r.errors.length,0);assert.equal(r.entries[0].marks,'0');assert.equal(r.entries[1].status,'ABSENT');assert.equal(r.entries[0].admissionNumber,'001');
+for(const text of ['001,101,RECORDED','001,,RECORDED','999,70,RECORDED','001,NaN,RECORDED','001,70,RECORDED\n001,60,RECORDED'])assert(validateImport(parseCsv('Admission number,Marks,Status\n'+text),students,'marks',100).errors.length);
+assert(validateImport(parseCsv('Admission number,Marks\n001,85'),students,'marks',100,{a:80}).errors.length);
+assert(validateImport(parseCsv('Admission number,Status\n001,UNKNOWN'),students,'attendance',100).errors.length);
+assert.equal(validateImport(parseCsv('Admission number,Status\n001,NOT_MARKED\n002,LATE'),students,'attendance',100).errors.length,0);
+assert.throws(()=>parseCsv('"unterminated'));
+(async()=>{const {Workbook}=require('exceljs');const wb=new Workbook();const sheet=wb.addWorksheet('Register');sheet.addRow(['Admission number','Status']);sheet.addRow(['001','PRESENT']);const bytes=await wb.xlsx.writeBuffer();validateWorkbookSize(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));assert.throws(()=>validateWorkbookSize(new ArrayBuffer(12)));const read=new Workbook();await read.xlsx.load(bytes);assert.equal(read.worksheets[0].getCell('A2').value,'001');console.log('PASS: CSV quoting, identifiers, zero/absence, duplicates, score limits, attendance codes and XLSX round trip.');})().catch(e=>{console.error(e);process.exitCode=1;});

@@ -1,0 +1,17 @@
+const {JSDOM}=require('jsdom');
+const dom=new JSDOM('<!doctype html><html><body></body></html>',{url:'http://localhost'});
+global.window=dom.window;global.document=dom.window.document;global.HTMLElement=dom.window.HTMLElement;Object.defineProperty(global,'navigator',{value:dom.window.navigator,configurable:true});global.IS_REACT_ACT_ENVIRONMENT=true;
+const React=require('react'),{render,screen,fireEvent,waitFor,cleanup}=require('@testing-library/react'),assert=require('node:assert/strict'),fs=require('fs'),ts=require('typescript');
+for(const ext of ['.ts','.tsx'])require.extensions[ext]=(module,path)=>module._compile(ts.transpileModule(fs.readFileSync(path,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,target:ts.ScriptTarget.ES2020}}).outputText,path);
+const Component=require('../app/attendance-register.tsx').AttendanceRegister;
+const rows={schools:[{id:'s',name:'Westbridge'}],years:[{id:'y',schoolId:'s',name:'2026-27'}],classes:[{id:'c',yearId:'y',name:'Class X',section:'A'}],students:[{id:'a',schoolId:'s',classId:'c',name:'Aarav',admissionNumber:'001',status:'ACTIVE'},{id:'b',schoolId:'s',classId:'c',name:'Meera',admissionNumber:'002',status:'ACTIVE'}]};
+(async()=>{
+ let calls=[];const request=async(path,opts)=>{if(opts){const body=JSON.parse(opts.body);calls.push(body);return {...body,revision:body.revision+1,legacyConflicts:0};}return {revision:0,entries:[],legacyConflicts:0};};
+ render(React.createElement(Component,{rows,request,onSaved:async()=>{}}));fireEvent.change(screen.getByLabelText('Academic year'),{target:{value:'y'}});fireEvent.change(screen.getByLabelText('Class / section'),{target:{value:'c'}});
+ await waitFor(()=>assert(screen.getByLabelText('Attendance for Aarav')));assert.equal(screen.getByLabelText('Attendance for Aarav').value,'NOT_MARKED');
+ fireEvent.click(screen.getByText('Mark unmarked students present'));fireEvent.change(screen.getByLabelText('Attendance for Meera'),{target:{value:'ABSENT'}});fireEvent.click(screen.getByText('Save class attendance'));
+ await waitFor(()=>assert.equal(calls.length,1));await waitFor(()=>assert(screen.getByText(/Class register saved/)));assert.equal(calls[0].entries.length,2);assert.equal(calls[0].revision,0);assert.equal(calls[0].entries.find(e=>e.studentId==='b').status,'ABSENT');
+ fireEvent.change(screen.getByLabelText('Attendance for Meera'),{target:{value:'LATE'}});fireEvent.click(screen.getByText('Save class attendance'));await waitFor(()=>assert.equal(calls.length,2));assert.equal(calls[1].revision,1);assert.equal(calls[1].entries.length,2);cleanup();
+ const conflict=async(p,o)=>{if(o)throw Error('Attendance changed by another user');return {revision:4,entries:[],legacyConflicts:0};};render(React.createElement(Component,{rows,request:conflict,onSaved:async()=>{}}));fireEvent.change(screen.getByLabelText('Academic year'),{target:{value:'y'}});fireEvent.change(screen.getByLabelText('Class / section'),{target:{value:'c'}});await waitFor(()=>assert(screen.getByLabelText('Attendance for Aarav')));fireEvent.change(screen.getByLabelText('Attendance for Aarav'),{target:{value:'PRESENT'}});fireEvent.click(screen.getByText('Save class attendance'));await waitFor(()=>assert.match(screen.getByRole('alert').textContent,/changed by another/));assert.equal(screen.getByLabelText('Attendance for Aarav').value,'PRESENT');cleanup();
+ console.log('PASS: unmarked default, bulk present with exceptions, one register payload, revision reuse and conflict retention.');
+})().catch(e=>{console.error(e);process.exitCode=1;});
