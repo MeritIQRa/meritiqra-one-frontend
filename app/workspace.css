@@ -1,0 +1,3 @@
+.account-menu{display:flex;align-items:center;gap:12px}.account-role{font-size:11px;color:#7b879b}.account-menu .secondary-btn{font-size:12px;padding:8px 11px}@media(max-width:480px){.account-menu{gap:6px}.account-role{display:none}.account-menu .secondary-btn{padding:7px 9px}}
+
+.sample-banner{display:flex;flex-direction:column;gap:4px;margin:0 0 18px;padding:13px 16px;border:1px solid #ead9a4;border-radius:12px;background:#fff9e8;color:#715613;font-size:13px}.sample-banner span{color:#887748}
