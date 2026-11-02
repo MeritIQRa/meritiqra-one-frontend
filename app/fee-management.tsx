@@ -3,7 +3,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Printer, ReceiptText, RefreshCw, Wallet } from "lucide-react";
 import type { AccountProfile } from "./auth-screen";
 
-const API=process.env.NEXT_PUBLIC_API_BASE_URL||"http://127.0.0.1:8081";
+const API=process.env.NEXT_PUBLIC_API_BASE_URL??"";
 type Row={id:string;[key:string]:string};
 type Receipt={paymentId:string;receiptNumber:string;invoiceNumber:string;invoiceId:string;organizationName:string;schoolName:string;studentName:string;admissionNumber:string;amount:string;currency:string;paidOn:string;method:string;status:string;reference:string;invoiceTotal:string;invoicePaidTotal:string;balanceDue:string};
 type Invoice={id:string;invoiceNumber:string;schoolId:string;schoolName:string;studentId:string;studentName:string;admissionNumber:string;amount:string;currency:string;issuedOn:string;dueDate:string;status:string;paidAmount:string;balanceDue:string;receipts:Receipt[]};

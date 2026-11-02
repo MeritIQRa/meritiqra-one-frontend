@@ -1,13 +1,18 @@
 "use client";
-import { FormEvent, useState } from "react";
+import { PlatformOperations } from "./platform-operations";
+import { FormEvent, useEffect, useState } from "react";
 import { Building2, LogOut, ShieldCheck } from "lucide-react";
 import type { AccountProfile } from "./auth-screen";
 import { FeatureSettings } from "./feature-settings";
+import { CoreProgramAccess } from "./core-program-access";
 
-const API = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8081";
+const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 type Created = { organizationName: string; organizationSlug: string; institutionType: string; superAdminEmail: string; superAdminRole: string };
 export function PlatformOnboarding({ profile, onSignOut }: { profile: AccountProfile; onSignOut: () => void }) {
-  const [screen,setScreen]=useState<"onboarding"|"features">("onboarding");
+  const [organizations,setOrganizations]=useState<Array<{id:string;name:string;slug:string;status:string;institutionType:string}>>([]);
+  const [directoryError,setDirectoryError]=useState("");
+  useEffect(()=>{fetch(`${API}/api/v1/platform/organizations/features`,{credentials:"include"}).then(async response=>{if(!response.ok)throw new Error(`Organization directory unavailable (${response.status})`);return response.json()}).then(setOrganizations).catch(cause=>setDirectoryError(cause.message));},[]);
+  const [screen,setScreen]=useState<"onboarding"|"features"|"core-programs">("onboarding");
   const [form, setForm] = useState({ organizationName: "", institutionType: "SCHOOL", adminFullName: "", adminEmail: "", adminPassword: "" });
   const [created, setCreated] = useState<Created | null>(null); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
   async function submit(event: FormEvent) { event.preventDefault(); setBusy(true); setError(""); setCreated(null);
@@ -17,9 +22,11 @@ export function PlatformOnboarding({ profile, onSignOut }: { profile: AccountPro
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not provision institution"); } finally { setBusy(false); }
   }
   if(screen==="features")return <FeatureSettings profile={profile} onBack={()=>setScreen("onboarding")}/>;
-  return <main className="role-admin"><header><div><strong>MeritIQRa Platform</strong><span>{profile.fullName} · Platform administrator</span></div><button className="secondary-btn" onClick={()=>setScreen("features")}><ShieldCheck size={15}/> Feature access</button><button className="secondary-btn" onClick={onSignOut}><LogOut size={15}/> Sign out</button></header>
+  if(screen==="core-programs")return <CoreProgramAccess profile={profile} onBack={()=>setScreen("onboarding")}/>;
+  return <main className="role-admin"><header><div><strong>MeritIQRa Platform</strong><span>{profile.fullName} · Platform administrator</span></div><button className="secondary-btn" onClick={()=>setScreen("core-programs")}><BookOpenIcon/> Core exam programs</button><button className="secondary-btn" onClick={()=>setScreen("features")}><ShieldCheck size={15}/> Feature access</button><button className="secondary-btn" onClick={onSignOut}><LogOut size={15}/> Sign out</button></header>
+    <section className="role-card"><h1>Platform command center</h1><p>Manage institution onboarding, licensed features and Core program access across MeritIQRa One.</p>{directoryError&&<p role="alert" className="auth-error">{directoryError}</p>}<div className="role-fields"><article><h2>{organizations.length}</h2><p>Institutions</p></article><article><h2>{organizations.filter(org=>org.status==="ACTIVE").length}</h2><p>Active workspaces</p></article></div><h2>Organization directory</h2><div style={{overflowX:"auto"}}><table><thead><tr><th>Institution</th><th>Type</th><th>Status</th></tr></thead><tbody>{organizations.map((org,index)=><tr key={org.id??index}><td>{org.name}</td><td>{org.institutionType}</td><td>{org.status}</td></tr>)}</tbody></table></div>{!directoryError&&organizations.length===0&&<p>No institutions loaded. Provision an institution below to begin.</p>}</section>
     <section className="role-card"><div className="role-title"><Building2/><div><h1>Institution onboarding</h1><p>Provision a private school or college workspace and its first super administrator.</p></div></div>
-      {error&&<div role="alert" className="auth-error">{error}</div>}{created&&<div className="sample-banner"><strong>{created.organizationName} is provisioned</strong><span>Workspace code: <b>{created.organizationSlug}</b> · Initial role: {created.superAdminRole} · Account: {created.superAdminEmail}. Share the workspace code and initial password with the super administrator through your approved secure channel.</span></div>}
+      {error&&<div role="alert" className="auth-error">{error}</div>}{created&&<div className="synthetic-banner"><strong>{created.organizationName} is provisioned</strong><span>Workspace code: <b>{created.organizationSlug}</b> · Initial role: {created.superAdminRole} · Account: {created.superAdminEmail}. Share the workspace code and initial password with the super administrator through your approved secure channel.</span></div>}
       <form className="role-form" onSubmit={submit}><h2><ShieldCheck size={18}/> New institution</h2><div className="role-fields">
         <label>School or college name<input required maxLength={180} value={form.organizationName} onChange={e=>setForm({...form,organizationName:e.target.value})}/></label>
         <label>Institution type<select value={form.institutionType} onChange={e=>setForm({...form,institutionType:e.target.value})}><option value="SCHOOL">School</option><option value="COLLEGE">College</option></select></label>
@@ -28,5 +35,6 @@ export function PlatformOnboarding({ profile, onSignOut }: { profile: AccountPro
         <label>Initial password<input required type="password" minLength={12} maxLength={72} value={form.adminPassword} onChange={e=>setForm({...form,adminPassword:e.target.value})}/></label>
       </div><button className="auth-submit" disabled={busy}>{busy?"Provisioning…":"Provision institution"}</button></form>
       <p className="role-footnote">Each school or college receives a separate organization ID and workspace code. Its super admin can manage that institution’s own accounts and roles; platform access does not expose institution student records through the school workspace APIs.</p>
-    </section></main>;
+    </section><PlatformOperations/></main>;
 }
+function BookOpenIcon(){return <Building2 size={15}/>}

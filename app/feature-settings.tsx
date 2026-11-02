@@ -2,7 +2,7 @@
 import {useEffect,useState} from "react";
 import {ArrowLeft,Building2,LockKeyhole,Save,ShieldCheck,SlidersHorizontal} from "lucide-react";
 import type {AccountProfile} from "./auth-screen";
-const API=process.env.NEXT_PUBLIC_API_BASE_URL||"http://127.0.0.1:8081";
+const API=process.env.NEXT_PUBLIC_API_BASE_URL??"";
 type Organization={id:string;name:string;slug:string;institutionType:string;status:string;features:Record<string,boolean>};
 type SchoolConfig={catalog:Record<string,string>;licensed:Record<string,boolean>;roles:Record<string,Record<string,boolean>>;allowed:Record<string,Record<string,boolean>>};
 export function FeatureSettings({profile,onBack}:{profile:AccountProfile;onBack:()=>void}){

@@ -3,7 +3,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { ArrowLeft, UserPlus, ShieldCheck, UserX, UserCheck, RefreshCw } from "lucide-react";
 import type { AccountProfile } from "./auth-screen";
 
-const API = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8081";
+const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 type ManagedAccount = { userId: string; fullName: string; email: string; role: string; active: boolean; studentIds: string[] };
 type Student = { id: string; name: string; admissionNumber: string };
 const sharedRoles = ["PRINCIPAL", "TEACHER", "STUDENT", "PARENT", "ACCOUNTANT", "ADMISSIONS_OFFICER", "HR_MANAGER", "LIBRARIAN", "TRANSPORT_MANAGER", "ATTENDANCE_OFFICER", "EXAM_COORDINATOR", "STAFF", "DRIVER", "BIOMETRIC_AGENT"];

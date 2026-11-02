@@ -8,7 +8,7 @@ This is a coverage plan, not a claim that every listed integration is already im
 
 ## 1. Shared application shell
 
-- Tenant identity: institution name, campus context, signed-in role, current academic year and a visible sample-data indicator.
+- Tenant identity: institution name, campus context, signed-in role, current academic year and a visible synthetic-data indicator in local workspaces.
 - Role-aware left navigation, quick launch, breadcrumbs, account menu and sign out.
 - Search, filters, date range, saved views, refresh, CSV export and contextual help where relevant.
 - Dashboard cards link to the actual underlying workflow and show a useful count, trend or action needed.
@@ -143,7 +143,7 @@ The backend role/tenant policy is authoritative. The UI hides unavailable naviga
 
 - School/college onboarding and initial super-admin creation; organization-scoped sessions and role accounts.
 - Platform entitlement switches and school super-admin role feature switches, persisted and enforced by API.
-- Dashboard, sample-data banner, generic record pages for current modules, and role-specific navigation.
+- Executive dashboard, synthetic local-data banner, generic record pages for current modules, and role-specific navigation.
 - Fee invoice listing, plan-based invoice creation, manual/full/partial payment recording and printable receipt flow.
 - Current generic modules: schools/campuses, academic years, classes, staff, subjects, students, admissions, attendance, assignments, timetable, fee plans/invoices/payments, exam requests, notices, library books, transport routes, leave, assets and helpdesk.
 - Local-only, idempotent synthetic dataset for every current module and local run/seed scripts.
@@ -152,7 +152,7 @@ The backend role/tenant policy is authoritative. The UI hides unavailable naviga
 
 - Platform subscription/billing, tenant usage limits and full platform monitoring/audit UI.
 - MFA, institution audit history, certificate/document workflows, approval inbox and bulk import UX.
-- MeritIQRa Core online/offline exam, OMR, scanning, evaluation, rank, AI explanation and performance analytics surfaces.
+- MeritIQRa Core competitive online/offline exam, OMR, scanning, evaluation, rank, AI explanation and performance analytics surfaces.
 - Accounting ledger, payroll, GPS transport, biometric device workflows, hostel, deeper inventory and provider-backed email/SMS/WhatsApp.
 - Production-grade dashboard visualizations, global search, saved filters, pagination, responsive mobile workflows and complete accessibility review across all modules.
 

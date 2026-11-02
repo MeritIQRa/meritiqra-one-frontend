@@ -15,3 +15,6 @@ target/
 *.p12
 *.jks
 .DS_Store
+.next-dev
+
+*.tsbuildinfo

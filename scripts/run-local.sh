@@ -11,4 +11,5 @@ if [[ ! -d node_modules ]]; then
 fi
 
 echo "Starting MeritIQRa One UI at http://127.0.0.1:3001"
-exec npm run dev -- --hostname 127.0.0.1 --port 3001
+BACKEND_URL="${BACKEND_URL:-http://127.0.0.1:8081}"
+exec env NEXT_DIST_DIR=.next-dev BACKEND_URL="$BACKEND_URL" NEXT_PUBLIC_API_BASE_URL="" npm run dev -- --hostname 127.0.0.1 --port 3001

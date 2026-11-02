@@ -1,0 +1,39 @@
+substitutions:
+  _RELEASE_TAG: manual
+  _REGION: asia-south1
+  _SERVICE: meritiqra-one-portal
+  _BACKEND_SERVICE: meritiqra-one-api
+  _RUNTIME_SERVICE_ACCOUNT: meritiqra-one-runtime@gen-lang-client-0491787004.iam.gserviceaccount.com
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args: [build, -t, '${_REGION}-docker.pkg.dev/$PROJECT_ID/meritiqra-one/frontend:${_RELEASE_TAG}', .]
+  - name: gcr.io/cloud-builders/docker
+    args: [push, '${_REGION}-docker.pkg.dev/$PROJECT_ID/meritiqra-one/frontend:${_RELEASE_TAG}']
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        set -euo pipefail
+        BACKEND_URL="$$(gcloud run services describe ${_BACKEND_SERVICE} --project=$PROJECT_ID --region=${_REGION} --format='value(status.url)')"
+        printf 'BACKEND_URL: %s\n' "$$BACKEND_URL" > /workspace/backend-env.yaml
+  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - ${_SERVICE}
+      - --project=$PROJECT_ID
+      - --region=${_REGION}
+      - --platform=managed
+      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/meritiqra-one/frontend:${_RELEASE_TAG}
+      - --service-account=${_RUNTIME_SERVICE_ACCOUNT}
+      - --env-vars-file=/workspace/backend-env.yaml
+      - --port=8080
+      - --memory=512Mi
+      - --cpu=1
+      - --max=5
+      - --min=0
+      - --allow-unauthenticated
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/meritiqra-one/frontend:${_RELEASE_TAG}'
