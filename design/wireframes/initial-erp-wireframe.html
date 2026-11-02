@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MeritIQRa One — Initial ERP UX Wireframe</title>
+<style>
+:root{font:14px/1.5 Inter,system-ui,Arial,sans-serif;color:#17243c;background:#f5f7fb}
+*{box-sizing:border-box}body{margin:0}aside{position:fixed;inset:0 auto 0 0;width:256px;background:#14213e;color:#e6edff;overflow:auto;padding:20px 12px}
+.brand{font-size:21px;font-weight:800;padding:8px 12px 24px;color:white}.section{font-size:10px;letter-spacing:1.5px;color:#8da2cc;padding:16px 12px 6px}
+nav button{display:block;width:100%;text-align:left;border:0;border-radius:9px;padding:10px 13px;color:inherit;background:transparent;cursor:pointer}
+nav button:hover,nav button.active{background:#304a80;color:#fff}
+main{margin-left:256px;padding:30px;max-width:1650px}header{display:flex;justify-content:space-between;align-items:center;gap:15px}
+h1{font-size:28px;margin:3px 0}small,.muted{color:#71819d}.pill{border-radius:99px;padding:8px 12px;background:#e5f5ed;color:#16734d;font-weight:700}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.card,.panel{background:white;border:1px solid #e3e8f2;border-radius:16px;padding:22px;box-shadow:0 4px 15px #14294b08}
+.card strong{display:block;font-size:28px;margin:10px 0}.layout{display:grid;grid-template-columns:2fr 1fr;gap:18px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}
+button.action{background:#365edb;border:0;color:white;border-radius:8px;padding:10px 14px;cursor:pointer}
+button.secondary{background:#eaf0ff;color:#2746a3}input{padding:10px;border:1px solid #d7dfed;border-radius:8px}
+table{border-collapse:collapse;width:100%}td,th{padding:13px 9px;border-bottom:1px solid #edf0f5;text-align:left}th{color:#71819d;font-size:12px}
+.tag{background:#e8f0ff;color:#3056a9;border-radius:15px;padding:5px 9px;font-size:12px}
+.note{margin-top:22px;padding:13px;border:1px dashed #c3cde0;border-radius:10px;color:#61718d}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
+@media(max-width:680px){aside{position:relative;width:100%;height:210px}main{margin:0;padding:18px}.cards{grid-template-columns:1fr}header{align-items:start;flex-direction:column}}
+</style></head><body>
+<aside><div class="brand">✦ MeritIQRa One</div><nav id="navigation"></nav></aside>
+<main><header><div><small>MeritIQRa One / <span id="crumb">Overview</span></small><h1 id="heading">School Overview</h1><small id="subtitle">Unified institution management workspace</small></div><span class="pill">● Demo School · 2026–27</span></header><div id="content"></div><div class="note">UI/UX wireframe only. All figures and records are illustrative. No authentication, real database, payment, OMR scanning, or live exam integration is connected.</div></main>
+<script>
+const groups={
+"WORKSPACE":["Overview","My Tasks","Calendar"],
+"ORGANIZATION":["Tenants & Schools","Campuses","Roles & Permissions","Academic Years"],
+"STUDENTS":["Admissions","Student Directory","Guardians","Student Documents"],
+"ACADEMICS":["Classes & Sections","Subjects","Attendance","Timetable","Assignments"],
+"ASSESSMENTS":["Exam Requests","Online Exams","Offline Exams & OMR","OMR Scan Queue","Results & Rankings","Exam Analytics"],
+"FINANCE":["Fee Plans","Invoices","Payments","Dues & Reminders"],
+"OPERATIONS":["Faculty & Staff","Transport","Library","Assets","Helpdesk"],
+"COMMUNICATION":["Announcements","Parent Portal","Student Portal","Notifications"]
+};
+let current="Overview";
+const sample=[{name:"Aarav Sharma",detail:"Grade 8 · Section A",status:"Active"},{name:"Diya Reddy",detail:"Grade 9 · Section B",status:"Active"},{name:"Ishaan Kumar",detail:"Grade 10 · Section A",status:"Pending"}];
+const state={};
+const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function renderNav(){document.getElementById("navigation").innerHTML=Object.entries(groups).map(([g,items])=>'<div class="section">'+g+'</div>'+items.map(item=>'<button data-page="'+item+'" class="'+(item===current?"active":"")+'">'+item+'</button>').join("")).join("");document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{current=b.dataset.page;render()})}
+function render(){
+renderNav();document.getElementById("crumb").textContent=current;document.getElementById("heading").textContent=current==="Overview"?"School Overview":current;
+document.getElementById("subtitle").textContent=current==="Overview"?"Unified institution management workspace":"Wireframe view · "+current;
+const root=document.getElementById("content");
+if(current==="Overview"){
+root.innerHTML='<div class="cards">'+[["Students","2,765","↑ 8.2%"],["Faculty","146","Across campuses"],["Fees collected","₹54.8L","Illustrative term"],["Attendance","94.6%","Illustrative today"]].map(x=>'<div class="card"><small>'+x[0]+'</small><strong>'+x[1]+'</strong><small>'+x[2]+'</small></div>').join("")+'</div><div class="layout"><section class="panel"><h2>Quick access</h2><div class="toolbar">'+["Admissions","Student Directory","Attendance","Payments","Exam Requests","Offline Exams & OMR"].map(x=>'<button class="action secondary" data-jump="'+x+'">'+x+'</button>').join("")+'</div><h3>Recent activity</h3><table><tr><th>Workflow</th><th>Owner</th><th>Status</th></tr><tr><td>New admission applications</td><td>Front office</td><td><span class="tag">Review</span></td></tr><tr><td>Mock exam preparation</td><td>Exam operator</td><td><span class="tag">Scheduled</span></td></tr><tr><td>Term fee reconciliation</td><td>Finance</td><td><span class="tag">Pending</span></td></tr></table></section><section class="panel"><h2>Priorities</h2><p>✓ Review admission applications</p><p>✓ Approve exam requests</p><p>✓ Validate offline OMR scans</p><p>✓ Follow up on outstanding fees</p></section></div>';
+document.querySelectorAll("[data-jump]").forEach(b=>b.onclick=()=>{current=b.dataset.jump;render()});return}
+const records=state[current]||(state[current]=sample.map(x=>({...x})));
+root.innerHTML='<div class="cards">'+[["Records",records.length],["Active",records.filter(r=>r.status==="Active").length],["Pending",records.filter(r=>r.status==="Pending").length],["Academic year","2026–27"]].map(x=>'<div class="card"><small>'+x[0]+'</small><strong>'+x[1]+'</strong></div>').join("")+'</div><section class="panel"><div class="toolbar"><input id="search" aria-label="Search records" placeholder="Search records"><button id="add" class="action">+ Add demo record</button><button id="export" class="action secondary">Export CSV</button></div><table><thead><tr><th>Name</th><th>Details</th><th>Status</th><th>Action</th></tr></thead><tbody id="rows"></tbody></table></section>';
+function draw(q=""){document.getElementById("rows").innerHTML=records.map((r,i)=>({...r,i})).filter(r=>(r.name+" "+r.detail).toLowerCase().includes(q.toLowerCase())).map(r=>'<tr><td>'+escapeHTML(r.name)+'</td><td>'+escapeHTML(r.detail)+'</td><td><span class="tag">'+escapeHTML(r.status)+'</span></td><td><button class="action secondary" data-delete="'+r.i+'">Remove</button></td></tr>').join("")||'<tr><td colspan="4">No records found</td></tr>';document.querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>{records.splice(Number(b.dataset.delete),1);render()})}
+draw();document.getElementById("search").oninput=e=>draw(e.target.value);
+document.getElementById("add").onclick=()=>{const name=prompt("Demo record name");if(!name||!name.trim())return;records.push({name:name.trim(),detail:"New demonstration record",status:"Pending"});render()};
+document.getElementById("export").onclick=()=>{const csv=[["Name","Details","Status"],...records.map(r=>[r.name,r.detail,r.status])].map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(",")).join("\n");const url=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));const a=document.createElement("a");a.href=url;a.download="meritiqra-one-wireframe.csv";a.click();URL.revokeObjectURL(url)};
+}render();
+</script></body></html>
