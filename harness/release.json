@@ -1,0 +1,59 @@
+{
+  "pipeline": {
+    "name": "MeritIQRa One frontend release",
+    "identifier": "meritiqra_one_frontend_release",
+    "projectIdentifier": "MeritIQRaIdeation",
+    "orgIdentifier": "default",
+    "description": "Build, deploy and health-check the dedicated MeritIQRa One frontend service. Source archive must correspond to the specified validated Git commit.",
+    "variables": [
+      {
+        "name": "source_archive",
+        "type": "String",
+        "required": true,
+        "value": "<+input>"
+      },
+      {
+        "name": "release_tag",
+        "type": "String",
+        "required": true,
+        "value": "<+input>"
+      }
+    ],
+    "stages": [
+      {
+        "stage": {
+          "name": "Build deploy and verify",
+          "identifier": "release",
+          "type": "Custom",
+          "delegateSelectors": [
+            "meritiqra-cd"
+          ],
+          "spec": {
+            "execution": {
+              "steps": [
+                {
+                  "step": {
+                    "name": "Cloud Run release",
+                    "identifier": "deploy",
+                    "type": "ShellScript",
+                    "timeout": "45m",
+                    "spec": {
+                      "shell": "Bash",
+                      "onDelegate": true,
+                      "source": {
+                        "type": "Inline",
+                        "spec": {
+                          "script": "set -euo pipefail\nset +x\nproject=gen-lang-client-0491787004\narchive=\"<+pipeline.variables.source_archive>\"\nrelease=\"<+pipeline.variables.release_tag>\"\n[[ \"$archive\" =~ ^gs://gen-lang-client-0491787004_cloudbuild/source/[a-zA-Z0-9._/-]+\\.tgz$ ]] || { echo \"Source must be an approved Cloud Build source archive\"; exit 1; }\n[[ \"$release\" =~ ^[a-f0-9]{40}$ ]] || { echo \"Release tag must be the full Git commit SHA\"; exit 1; }\nwork=$(mktemp -d)\ntrap 'rm -rf \"$work\"' EXIT\ngcloud storage cp \"$archive\" \"$work/source.tgz\"\npython3 - \"$work\" <<'PYEXTRACT'\nimport tarfile,sys,pathlib\nroot=pathlib.Path(sys.argv[1])\nwith tarfile.open(root/'source.tgz') as tar:\n for m in tar.getmembers():\n  if m.issym() or m.islnk() or not (root/m.name).resolve().is_relative_to(root.resolve()):raise ValueError('Unsafe archive')\n tar.extractall(root)\nPYEXTRACT\ncd \"$work\"\ntest -f cloudbuild.yaml\ngcloud builds submit . --project=\"$project\" --config=cloudbuild.yaml --substitutions=\"_RELEASE_TAG=$release\"\nurl=$(gcloud run services describe meritiqra-one-portal --project=\"$project\" --region=asia-south1 --format='value(status.url)')\ncurl --fail --silent --show-error --retry 5 \"$url/api/v1/health\"\necho \"Verified service URL: $url\"\n"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  }
+}
