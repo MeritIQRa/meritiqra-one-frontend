@@ -1,0 +1,17 @@
+node_modules
+.next
+.env.local
+.env
+.env.*
+!.env.example
+!.env.local.example
+node_modules/
+.next/
+.gradle/
+build/
+target/
+*.pem
+*.key
+*.p12
+*.jks
+.DS_Store
