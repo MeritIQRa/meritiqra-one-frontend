@@ -2,10 +2,12 @@
 import { FormEvent, useState } from "react";
 import { Building2, LogOut, ShieldCheck } from "lucide-react";
 import type { AccountProfile } from "./auth-screen";
+import { FeatureSettings } from "./feature-settings";
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8081";
 type Created = { organizationName: string; organizationSlug: string; institutionType: string; superAdminEmail: string; superAdminRole: string };
 export function PlatformOnboarding({ profile, onSignOut }: { profile: AccountProfile; onSignOut: () => void }) {
+  const [screen,setScreen]=useState<"onboarding"|"features">("onboarding");
   const [form, setForm] = useState({ organizationName: "", institutionType: "SCHOOL", adminFullName: "", adminEmail: "", adminPassword: "" });
   const [created, setCreated] = useState<Created | null>(null); const [error, setError] = useState(""); const [busy, setBusy] = useState(false);
   async function submit(event: FormEvent) { event.preventDefault(); setBusy(true); setError(""); setCreated(null);
@@ -14,7 +16,8 @@ export function PlatformOnboarding({ profile, onSignOut }: { profile: AccountPro
       setCreated(await response.json()); setForm({ organizationName: "", institutionType: "SCHOOL", adminFullName: "", adminEmail: "", adminPassword: "" });
     } catch (cause) { setError(cause instanceof Error ? cause.message : "Could not provision institution"); } finally { setBusy(false); }
   }
-  return <main className="role-admin"><header><div><strong>MeritIQRa Platform</strong><span>{profile.fullName} · Platform administrator</span></div><button className="secondary-btn" onClick={onSignOut}><LogOut size={15}/> Sign out</button></header>
+  if(screen==="features")return <FeatureSettings profile={profile} onBack={()=>setScreen("onboarding")}/>;
+  return <main className="role-admin"><header><div><strong>MeritIQRa Platform</strong><span>{profile.fullName} · Platform administrator</span></div><button className="secondary-btn" onClick={()=>setScreen("features")}><ShieldCheck size={15}/> Feature access</button><button className="secondary-btn" onClick={onSignOut}><LogOut size={15}/> Sign out</button></header>
     <section className="role-card"><div className="role-title"><Building2/><div><h1>Institution onboarding</h1><p>Provision a private school or college workspace and its first super administrator.</p></div></div>
       {error&&<div role="alert" className="auth-error">{error}</div>}{created&&<div className="sample-banner"><strong>{created.organizationName} is provisioned</strong><span>Workspace code: <b>{created.organizationSlug}</b> · Initial role: {created.superAdminRole} · Account: {created.superAdminEmail}. Share the workspace code and initial password with the super administrator through your approved secure channel.</span></div>}
       <form className="role-form" onSubmit={submit}><h2><ShieldCheck size={18}/> New institution</h2><div className="role-fields">
