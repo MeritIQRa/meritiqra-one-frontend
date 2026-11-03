@@ -12,31 +12,21 @@ steps:
   - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
     entrypoint: bash
     args:
-      - -c
+      - -ceu
       - |
-        set -euo pipefail
         BACKEND_URL="$$(gcloud run services describe ${_BACKEND_SERVICE} --project=$PROJECT_ID --region=${_REGION} --format='value(status.url)')"
-        gcloud run services describe ${_SERVICE} --project=$PROJECT_ID --region=${_REGION} --format=json > /workspace/current-service.json
-        python3 -c 'import json; d=json.load(open("/workspace/current-service.json")); env=d["spec"]["template"]["spec"]["containers"][0].get("env",[]); json.dump({x["name"]:x["value"] for x in env if x["name"]=="TENANT_BACKEND_ROUTES" and "value" in x},open("/workspace/tenant-env.json","w"))'
-        printf 'BACKEND_URL: %s\n' "$$BACKEND_URL" > /workspace/backend-env.yaml
-        python3 -c 'import json; d=json.load(open("/workspace/tenant-env.json")); f=open("/workspace/backend-env.yaml","a"); [f.write(k+": "+json.dumps(v)+"\n") for k,v in d.items()]'
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
-    entrypoint: gcloud
-    args:
-      - run
-      - deploy
-      - ${_SERVICE}
-      - --project=$PROJECT_ID
-      - --region=${_REGION}
-      - --platform=managed
-      - --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/meritiqra-one/frontend:${_RELEASE_TAG}
-      - --service-account=${_RUNTIME_SERVICE_ACCOUNT}
-      - --env-vars-file=/workspace/backend-env.yaml
-      - --port=8080
-      - --memory=512Mi
-      - --cpu=1
-      - --max=5
-      - --min=0
-      - --no-invoker-iam-check
+        gcloud run deploy ${_SERVICE} \
+          --project=$PROJECT_ID \
+          --region=${_REGION} \
+          --platform=managed \
+          --image=${_REGION}-docker.pkg.dev/$PROJECT_ID/meritiqra-one/frontend:${_RELEASE_TAG} \
+          --service-account=${_RUNTIME_SERVICE_ACCOUNT} \
+          --update-env-vars="BACKEND_URL=$$BACKEND_URL" \
+          --port=8080 \
+          --memory=512Mi \
+          --cpu=1 \
+          --max=5 \
+          --min=0 \
+          --no-invoker-iam-check
 images:
   - '${_REGION}-docker.pkg.dev/$PROJECT_ID/meritiqra-one/frontend:${_RELEASE_TAG}'
