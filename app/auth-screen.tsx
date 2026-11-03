@@ -17,6 +17,7 @@ export type AccountProfile = {
   email: string;
   role: string;
   sampleData: boolean;
+  masterAdministrator?: boolean;
 };
 
 export function AuthScreen({ onAuthenticated }: { onAuthenticated: (profile: AccountProfile) => void }) {
