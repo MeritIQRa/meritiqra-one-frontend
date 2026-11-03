@@ -11,3 +11,9 @@ The platform directory's Open school workspace action ends the current session a
 Configure the same approved pinned identity on every isolated ERP backend when onboarding an additional dedicated database. The existing shared and VaidyaEdu services are the current rollout targets. Missing configuration fails closed. Preserve these runtime environment variables across releases.
 
 Validation: 85 backend tests passed, including database-backed tests for identity pinning, two independent school/college memberships, session scoping and school-admin mutation denial. Frontend regression tests and production build passed. Live browser verification is recorded separately after rollout.
+
+## Live verification — 2026-11-03
+
+Deployed tested image `master-admin-20261103` to main API revision `meritiqra-one-api-00016-9qd` and isolated VaidyaEdu API revision `meritiqra-one-vaidyaedu-api-00002-bp8`. Frontend Cloud Build `7b61ca6e-2047-47f5-9676-49305b31629c` succeeded.
+
+Real browser Google login with the authorized master account opened VaidyaEdu from the platform directory. The school dashboard displayed the master administrator banner, 153 students and four sections. VaidyaEdu migration 27 succeeded; the original operations school owner remains active. Unauthenticated auth/me returns 401. Other school memberships were covered by automated tests; Westbridge was not separately browser-tested in this release.
