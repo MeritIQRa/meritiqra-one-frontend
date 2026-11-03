@@ -1,0 +1,11 @@
+"use client";
+import {useEffect,useRef,useState} from "react";
+import type {Map as LMap,LayerGroup} from "leaflet";
+import "leaflet/dist/leaflet.css";
+export type MapStop={id:string;name:string;latitude:number;longitude:number};
+export default function TransportMap({latitude,longitude,stops,freshness}:{latitude?:number|null;longitude?:number|null;stops:MapStop[];freshness:string}){
+ const element=useRef<HTMLDivElement>(null),map=useRef<LMap|null>(null),group=useRef<LayerGroup|null>(null);const [ready,setReady]=useState(false),[tileError,setTileError]=useState(false);
+ useEffect(()=>{let active=true;void import("leaflet").then(L=>{if(!active||!element.current)return;map.current=L.map(element.current,{zoomControl:true,scrollWheelZoom:false}).setView([17.385,78.4867],11);L.tileLayer(process.env.NEXT_PUBLIC_MAP_TILE_URL||"https://tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',maxZoom:19}).on("tileerror",()=>setTileError(true)).addTo(map.current);group.current=L.layerGroup().addTo(map.current);setReady(true)});return()=>{active=false;map.current?.remove();map.current=null}},[]);
+ useEffect(()=>{if(!ready)return;void import("leaflet").then(L=>{if(!map.current||!group.current)return;group.current.clearLayers();const points:[number,number][]=[];stops.forEach(s=>{points.push([s.latitude,s.longitude]);const label=document.createElement("span");label.textContent=s.name;L.circleMarker([s.latitude,s.longitude],{radius:6,color:"#64748b",fillOpacity:1}).bindTooltip(label).addTo(group.current!)});if(latitude!=null&&longitude!=null){points.push([latitude,longitude]);L.circleMarker([latitude,longitude],{radius:12,color:freshness==="FRESH"?"#4338ca":"#b45309",fillOpacity:.85,weight:4}).bindTooltip("Bus · "+freshness.toLowerCase()).addTo(group.current!)}if(points.length)map.current.fitBounds(L.latLngBounds(points),{padding:[35,35],maxZoom:15,animate:false})});},[ready,latitude,longitude,stops,freshness]);
+ return <><div ref={element} className="ops-map" role="region" aria-label="Bus and assigned stops map"/>{tileError&&<p role="status">Map tiles unavailable. Coordinates and stop details remain available below.</p>}</>;
+}

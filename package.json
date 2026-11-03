@@ -6,12 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node scripts/check-academic-entry.cjs && node scripts/check-performance-report.cjs && node scripts/check-register-import.cjs && node scripts/check-attendance-register.cjs"
+    "test": "node scripts/check-academic-entry.cjs && node scripts/check-performance-report.cjs && node scripts/check-register-import.cjs && node scripts/check-attendance-register.cjs && node scripts/check-fee-management.cjs && node scripts/check-operations.cjs"
   },
   "dependencies": {
     "exceljs": "^4.4.0",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.9",
+    "leaflet": "^1.9.4",
     "lucide-react": "^0.468.0",
     "next": "^15.3.0",
     "react": "^19.0.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.3",
+    "@types/leaflet": "^1.9.22",
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
