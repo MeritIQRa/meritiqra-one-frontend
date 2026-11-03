@@ -1,4 +1,25 @@
 
+## 3 November 2026 — Modern design-system foundation and shell
+
+Audited the frontend checkout: Next.js 15 / React 19, a single authenticated module workspace,
+plain CSS, Lucide icons and existing domain-specific components. Kept the current stack and API
+contracts. Added semantic light-theme tokens and shared styling for the shell, navigation,
+dashboards, forms, tables, buttons, status badges, overlays, sign-in, reduced motion and print.
+Added a keyboard skip link, named navigation/main landmarks, descriptive navigation controls and
+a user-and-tenant scoped persistent collapse preference. Compact desktop/tablet navigation uses
+an icon rail with accessible names and tooltips; phone navigation remains a labelled drawer.
+
+| Phase | Tasks | Completed | Remaining | Evidence |
+|---|---|---|---|---|
+| Audit | Inspect stack, shell, module map, styles, dependencies and checks | Yes | Capture measured performance baseline | `docs/UI_UX_DECISION_AND_INVENTORY.md`; `app/page.tsx`; CSS and package metadata |
+| Design system | Semantic tokens, shell, focus, responsive navigation, shared surfaces | Foundation complete | Consolidate duplicate domain controls; validate real contrast pairs | `app/modern-ui.css`; `app/erp-shell.tsx` |
+| Core modules | Dashboard, records, student and academic surfaces | Shared foundation applied | Screen-by-screen responsive and accessibility review | Inventory in decision record |
+| Advanced modules | Exams, results, fees, attendance, curriculum, operations | Shared foundation applied; existing behavior retained | Workflow-specific visual and state QA per inventory | Existing scripted checks and inventory |
+| QA | Production build and existing scripted suite | Passed after foundation | Manual 360/390/768/1024/1440 browser, keyboard/zoom/contrast, visual comparison | `npm run build`; `npm test` |
+
+Status is route-based, not represented as a guessed percentage. Only build and scripted checks are
+claimed as verified; manual device, accessibility, visual-regression and performance reviews remain open.
+
 ## 3 November 2026 — Transport / Communication Centre
 
 Implemented role-aware in-shell workspaces, transport setup/fleet/driver controls and guardian views;
