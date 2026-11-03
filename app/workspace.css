@@ -13,3 +13,18 @@
 .attendance-reports .report-note{font-size:12px;color:var(--text-secondary,#64748b)}
 .attendance-compact .marks-scroll,.attendance-reports .marks-scroll{max-height:480px;overflow:auto}
 .attendance-compact thead,.attendance-reports thead{position:sticky;top:0;background:var(--surface,#fff);z-index:1}
+
+/* Compact reporting filter bar: labels remain visible and icons are decorative. */
+.attendance-reports .panel-head h3{display:flex;align-items:center;gap:8px}
+.attendance-reports .academic-filter-row{display:grid;grid-template-columns:1.35fr 1.35fr 1fr 1fr 1fr auto;gap:10px;padding:12px;background:#f7f9fc;border:1px solid #e2e8f0;border-radius:10px}
+.attendance-reports label{display:flex;flex-direction:column;gap:5px;min-width:0;font-size:12px;font-weight:600;color:#475569}
+.attendance-reports label>span{display:flex;align-items:center;gap:5px}
+.attendance-reports input,.attendance-reports select{box-sizing:border-box;width:100%;height:36px;min-width:0;background:#fff;color:#17233b;border:1px solid #d8e0eb;border-radius:7px;outline-offset:2px;font-weight:400}
+.attendance-reports input:focus-visible,.attendance-reports select:focus-visible,.attendance-reports button:focus-visible{outline:2px solid #3458d4;outline-offset:2px}
+.attendance-reports .table-toolbar{display:flex;align-items:flex-end;gap:10px;padding:10px 0}
+.attendance-reports .table-toolbar label{flex:1 1 150px}
+.attendance-reports .table-toolbar label:has(input){flex:2 1 220px}
+.attendance-reports .secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:7px 11px;border:1px solid #d8e0eb;border-radius:7px;background:#fff;font-size:12px;white-space:nowrap}
+.attendance-reports .secondary-btn:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:1100px){.attendance-reports .academic-filter-row{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:640px){.attendance-reports .academic-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))}.attendance-reports .table-toolbar label{flex-basis:40%}.attendance-reports .secondary-btn{min-height:40px}}
