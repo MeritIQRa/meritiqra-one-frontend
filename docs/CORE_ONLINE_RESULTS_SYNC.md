@@ -11,3 +11,12 @@ Deployment: run backend migrations before executing `scripts/core-results/sync.p
 Validation: six matching unit tests; backend authorization tests for anonymous/student/parent/teacher/platform and cross-tenant confirmation; existing backend suite; frontend suite/build and student-ID search test. Live deployment, job execution, rerun counts and browser evidence are recorded after completion.
 
 Limitations: no fuzzy automatic student assignment, no offline ingestion, no combined academic-plus-Core annual PTM PDF yet, and no student/parent access to this administrator review page. Confirmed students' published Core results can be downloaded from this view. No claim is made that all 437 students have published online results.
+
+## Live evidence — 3 November 2026
+
+- Backend Cloud Build `66081e44-05db-4585-a17e-35fcd0b2b3b1` succeeded. Main API revision `meritiqra-one-api-00018-vlj`; Vaidya API revision `meritiqra-one-vaidyaedu-api-00004-cz4`. Vaidya Flyway V28 succeeded.
+- Two successful imports yielded the same 1,134 online attempts and 535 Core accounts: 165 exact-matched accounts / 154 ERP students / 354 attempts; 370 review-required accounts / 780 attempts. Unmatched unrelated source accounts were not imported. No offline results were imported.
+- Live browser verified exact and review counts. Core ID 7084 search returned two attempts, and the downloaded CSV was reopened and checked for that ID and retained admission number.
+- Backend result: 92 discovered tests, 48 executed successfully and 44 skipped. Frontend command, production build, matching unit tests, identity/search and device-preflight tests passed. Skipped integration checks are not claimed as passing.
+- Vaidya academic year currently has no start/end dates; year-filtered PDF live verification awaits confirmed reporting dates. The proposed production date change was blocked by automatic approval review and was not applied.
+- The dedicated sync account and the two explicit secret grants are approved and created. Creating the recurring Cloud Run job/Scheduler and its caller invoker grant was separately blocked pending exact user approval. Until approved, automatic refresh is not active; the two successful imports ran through the existing authorized operator connection.
