@@ -16,3 +16,8 @@ Core: MERITIQRA_CORE_API_URL, MERITIQRA_CORE_IDENTITY_AUDIENCE, MERITIQRA_CORE_S
 
 ## Limits / remaining work
 Core assignment requires each participating student to have exactly one linked Google student login. No real VaidyaEdu exam was assigned or attendance fabricated during verification. General institution lifecycle/features are not federated by this narrowly scoped campus/licensing bridge. Full Core workspace/question-bank authoring and offline scan flows are not proven by template-list verification. Global page-by-page visual modernization is outside this attendance-focused release. Native/biometric hardware validation remains separate.
+
+## Live verification
+Main API revision 00017-bc4, VaidyaEdu API 00003-bp7 and portal 00013-qjj are deployed. Platform campus selector now loads VaidyaEdu NEET Academy and its program 11 licence through the authenticated bridge. School-side real Google login loaded eight published Core templates and nine class sections. Unauthenticated internal campus access returns 401.
+
+Attendance report loaded the existing B-1 register: 48 entries, 47 present, 1 absent, 97.9%. Absence and section search narrowed to one saved entry. Real browser PDF/XLSX downloads succeeded; exported Excel was reopened and values reconciled. Unsaved G-2 register displayed 53 PRESENT and revision 0; no Save was performed. All 437 students remain available.
