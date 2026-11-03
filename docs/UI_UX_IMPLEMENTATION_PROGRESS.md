@@ -17,8 +17,11 @@ an icon rail with accessible names and tooltips; phone navigation remains a labe
 | Advanced modules | Exams, results, fees, attendance, curriculum, operations | Shared foundation applied; existing behavior retained | Workflow-specific visual and state QA per inventory | Existing scripted checks and inventory |
 | QA | Production build and existing scripted suite | Passed after foundation | Manual 360/390/768/1024/1440 browser, keyboard/zoom/contrast, visual comparison | `npm run build`; `npm test` |
 
-Status is route-based, not represented as a guessed percentage. Only build and scripted checks are
-claimed as verified; manual device, accessibility, visual-regression and performance reviews remain open.
+Status is route-based, not represented as a guessed percentage. The production rollout completed
+through Cloud Build `910f35da-9f38-4e27-87c7-666f4f68b7c2`; Cloud Run revision
+`meritiqra-one-portal-00020-6ls` is at 100% traffic. The deployed Vaidya workspace loaded in the
+signed-in browser with live student and attendance records. Manual device, accessibility,
+visual-regression and performance reviews remain open.
 
 ## 3 November 2026 — Transport / Communication Centre
 
