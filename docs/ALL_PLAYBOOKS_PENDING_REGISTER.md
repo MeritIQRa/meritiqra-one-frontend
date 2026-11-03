@@ -224,3 +224,10 @@ Foundation onboarding, scoped logins and feature controls exist; specialist comp
 ## Closing an item
 
 Record item ID, implementation commit, migration/configuration, applicable tenant/provider prerequisites, test command/report, deployed revision and end-to-end evidence. Mark complete only after its acceptance passes. Track intentional architecture deviations explicitly. Do not use an overall completion percentage without a stable, weighted requirement inventory.
+
+## 3 November 2026 — online results and classroom preparation
+
+- Online-only Core sync: new result inbox, explicit identity review, idempotent attempt keys, original subject scores and release status. Deployment/import evidence is in `CORE_ONLINE_RESULTS_SYNC.md`; do not treat pending near-name matches as verified student results.
+- Classroom playbook phase-0 reuse audit and local preparation UI implemented. See `CLASSROOM_READINESS_IMPLEMENTATION.md` for source paths and device-lifecycle tests.
+- Still pending for classroom: tenant-scoped Core join bridge, teacher/learner/mentor rooms, provider token and publishing enforcement, durable chat/doubts, whiteboard integration, private recording lifecycle/playback, quizzes/leaderboards, parent journeys, live device/media verification, capacity and accessibility testing. Device preparation is not a working live-class feature.
+- Combined academic + Core annual PTM report and student/parent Core result access remain pending; this release provides an administrator Core online performance PDF separately.
