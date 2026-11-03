@@ -60,7 +60,7 @@ export function performanceReport(rows:Record<string,ReportRow[]>,studentId:stri
  const att=(rows.attendance||[]).filter(a=>a.studentId===studentId&&a.schoolId===student.schoolId&&year.startDate&&year.endDate&&a.date>=year.startDate&&a.date<=year.endDate);
  const present=att.filter(a=>['PRESENT','LATE'].includes(a.status)).length;
  const klass=rows.classes?.find(c=>c.id===student.classId);
- doc.setFillColor(...navy);doc.rect(0,0,210,28,'F');text(clean(school?.name),12,11,16,[255,255,255]);text('ANNUAL MARKS REGISTER / SUBJECT x EXAM',12,20,9,[192,215,243]);text(clean(year.name),175,20,11,[255,255,255]);
+ doc.setFillColor(...navy);doc.rect(0,0,210,28,'F');text(clean(school?.name),12,11,16,[255,255,255]);text('ANNUAL MARKS REGISTER / SUBJECT x EXAM',12,20,9,[192,215,243]);doc.setTextColor(255,255,255);doc.setFontSize(9);doc.text(clean(year.name),198,20,{align:'right',maxWidth:75});
  autoTable(doc,{startY:31,theme:'plain',body:[[clean(student.name), 'Admission: '+clean(student.admissionNumber),'Class: '+clean(klass?.name)+' / '+clean(klass?.section)],['Guardian: '+clean(student.guardianName),'Academic year: '+clean(year.name),'Published results only']],styles:{fontSize:8,cellPadding:2},margin:{left:12,right:12}});
  let y=(doc as any).lastAutoTable.finalY+7;
  text('01  /  COMPLETE ACADEMIC MARKS REGISTER',12,y,10,teal);y+=4;
