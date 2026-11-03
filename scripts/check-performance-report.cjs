@@ -15,3 +15,8 @@ rows['exam-results']=rows['exam-results'].map(r=>({...r,grade:r.marksObtained/r.
 rows.attendance=Array.from({length:120},(_,i)=>({id:'attendance'+i,studentId:'student',schoolId:'school',date:new Date(Date.UTC(2026,3,1+i)).toISOString().slice(0,10),status:i<111?'PRESENT':i<114?'LATE':i<118?'ABSENT':'EXCUSED'}));
 const doc=m.exports.performanceReport(rows,'student','year');const output=doc.output();assert(!output.includes('MUST_NOT_APPEAR'));assert.equal(doc.getNumberOfPages(),2);assert(output.includes('97 / 100'));assert(output.includes('Practical'));assert(output.includes('Annual'));assert(output.includes('111')); assert.throws(()=>m.exports.performanceReport(rows,'student','missing'));
 const destination=process.argv[2];if(destination)fs.writeFileSync(destination,Buffer.from(doc.output('arraybuffer')));console.log('PASS: year isolation, publication filtering, missing-year rejection and PDF generation. Pages:',doc.getNumberOfPages());
+
+const yearModule={exports:{}};new Function('require','module','exports',ts.transpileModule(fs.readFileSync('app/report-year.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText)(require,yearModule,yearModule.exports);
+rows.years[0].name='2026–27 Academic Year';rows['exam-results'].forEach(r=>r.academicYear='2026–27');
+assert.equal(yearModule.exports.resolveReportYear(rows,'student','2026–27'),'year');assert.throws(()=>yearModule.exports.resolveReportYear(rows,'student',''));
+console.log('PASS: report year uses linked ID when result and academic-year labels differ.');
