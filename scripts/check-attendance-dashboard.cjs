@@ -1,0 +1,11 @@
+const {JSDOM}=require('jsdom');const dom=new JSDOM('<html><body></body></html>',{url:'http://localhost'});global.window=dom.window;global.document=dom.window.document;global.HTMLElement=dom.window.HTMLElement;Object.defineProperty(global,'navigator',{value:dom.window.navigator,configurable:true});global.IS_REACT_ACT_ENVIRONMENT=true;
+const fs=require('fs'),ts=require('typescript'),assert=require('node:assert/strict'),React=require('react');for(const ext of ['.ts','.tsx'])require.extensions[ext]=(m,p)=>m._compile(ts.transpileModule(fs.readFileSync(p,'utf8'),{compilerOptions:{target:ts.ScriptTarget.ES2020,module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX}}).outputText,p);
+const {render,screen,fireEvent,cleanup}=require('@testing-library/react');
+const {AttendanceDashboard}=require('../app/attendance-dashboard.tsx');
+let selected;const rows={classes:[{id:'c',name:'Class X',section:'A'}]};
+const entries=['PRESENT','ABSENT','EXCUSED','NOT_MARKED'].map((status,i)=>({classId:'c',studentId:'s'+i,date:'2026-11-03',status,session:'DAILY'}));
+render(React.createElement(AttendanceDashboard,{entries,rows,onSection:id=>selected=id}));
+assert(screen.getByRole('img',{name:'Attendance rate 50.0 percent'}));
+fireEvent.click(screen.getByRole('button',{name:/Class X/}));assert.equal(selected,'c');cleanup();
+render(React.createElement(AttendanceDashboard,{entries:[],rows,onSection:()=>{}}));assert(screen.getByRole('img',{name:'No recorded attendance rate'}));cleanup();
+console.log('PASS: dashboard excludes excused/unmarked from rate, section drill-down and missing-data state.');

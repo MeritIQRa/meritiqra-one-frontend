@@ -24,3 +24,9 @@ Attendance report loaded the existing B-1 register: 48 entries, 47 present, 1 ab
 
 ## Separate report workspace
 Attendance Reports now has its own Academics sidebar page, separate from Attendance Register. It inherits attendance feature access and reporting roles, excludes biometric agents, and retains backend class/tenant checks. Compact responsive filters have visible labels, decorative icons, keyboard focus indicators and consistent PDF/Excel buttons. Frontend regression/export tests and production build passed before release `attendance-reports-page-20261103`.
+
+## Reports Centre and monitoring — 3 November 2026
+
+Added a role-aware Reports & Insights navigation group. Reports Centre links attendance downloads, attendance monitoring, existing academic performance reports and finance receipts. Monitoring is a separate view from register entry and report downloads, with year, section, date and session filters, present/absent/late counts, unique recorded students, attendance-rate ring, latest 14 recorded dates and section comparisons with drill-down. Counts are saved student-session entries; missing days are never inferred. Sections without saved records do not receive a fabricated rate.
+
+Local verification: complete frontend test command, including PDF/XLSX round-trip and new dashboard rate, section selection and no-data checks; production build and TypeScript checks. Cloud deployment and browser verification are recorded after release. Existing exam/finance screens are linked, not replaced with new reporting engines. Responsive CSS is included; exhaustive device/accessibility testing remains pending.
