@@ -21,3 +21,6 @@ Core assignment requires each participating student to have exactly one linked G
 Main API revision 00017-bc4, VaidyaEdu API 00003-bp7 and portal 00013-qjj are deployed. Platform campus selector now loads VaidyaEdu NEET Academy and its program 11 licence through the authenticated bridge. School-side real Google login loaded eight published Core templates and nine class sections. Unauthenticated internal campus access returns 401.
 
 Attendance report loaded the existing B-1 register: 48 entries, 47 present, 1 absent, 97.9%. Absence and section search narrowed to one saved entry. Real browser PDF/XLSX downloads succeeded; exported Excel was reopened and values reconciled. Unsaved G-2 register displayed 53 PRESENT and revision 0; no Save was performed. All 437 students remain available.
+
+## Separate report workspace
+Attendance Reports now has its own Academics sidebar page, separate from Attendance Register. It inherits attendance feature access and reporting roles, excludes biometric agents, and retains backend class/tenant checks. Compact responsive filters have visible labels, decorative icons, keyboard focus indicators and consistent PDF/Excel buttons. Frontend regression/export tests and production build passed before release `attendance-reports-page-20261103`.
