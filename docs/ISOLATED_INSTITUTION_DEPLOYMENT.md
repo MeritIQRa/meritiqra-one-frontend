@@ -26,3 +26,7 @@ The central platform registry entry remains ONBOARDING pending owner acceptance 
 ## Operational follow-up
 
 Complete school-owner sign-in, teacher provisioning, 2027 source review, centralized isolated-tenant administration, Core exam entitlement/service integration and a restore-tested backup/recovery procedure before declaring full institution rollout complete.
+
+## Final onboarding verification
+
+A real platform administrator Google sign-in completed successfully and displayed VaidyaEdu Group in the organization directory with ONBOARDING status. Public portal routing to the isolated database passed. Both approved onboarding emails were accepted by Core's existing Gmail provider; inbox receipt is not asserted. The school owner's Google sign-in remains pending owner action.
