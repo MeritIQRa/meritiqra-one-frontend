@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node scripts/check-academic-entry.cjs && node scripts/check-performance-report.cjs && node scripts/check-register-import.cjs && node scripts/check-attendance-register.cjs && node scripts/check-fee-management.cjs && node scripts/check-operations.cjs"
+    "test": "node scripts/check-academic-entry.cjs && node scripts/check-performance-report.cjs && node scripts/check-register-import.cjs && node scripts/check-attendance-register.cjs && node scripts/check-fee-management.cjs && node scripts/check-operations.cjs && node scripts/check-integration-settings.cjs"
   },
   "dependencies": {
     "exceljs": "^4.4.0",
