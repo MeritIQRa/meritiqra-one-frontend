@@ -1,7 +1,9 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useEffect } from "react";
 import { GraduationCap, ShieldCheck, Sparkles } from "lucide-react";
+
+import {GoogleSignIn} from "./google-sign-in";
 
 const API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
@@ -18,7 +20,10 @@ export type AccountProfile = {
 };
 
 export function AuthScreen({ onAuthenticated }: { onAuthenticated: (profile: AccountProfile) => void }) {
+  const [googleOnly,setGoogleOnly]=useState(true);
+  useEffect(()=>{fetch(`${API}/api/v1/auth/google/config`,{credentials:"include"}).then(r=>r.ok?r.json():Promise.reject()).then(c=>setGoogleOnly(c.googleOnlySchools)).catch(()=>setGoogleOnly(true))},[]);
   const [organizationSlug, setOrganizationSlug] = useState("");
+  useEffect(()=>{const code=new URLSearchParams(window.location.search).get("workspace");if(code&&/^[a-z0-9-]{1,100}$/.test(code))setOrganizationSlug(code)},[]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -47,11 +52,11 @@ export function AuthScreen({ onAuthenticated }: { onAuthenticated: (profile: Acc
       <p className="auth-subtitle">Use the workspace code and account assigned to you by your institution.</p>
       <form className="auth-form" onSubmit={submit}>
         <label>School, college, or platform workspace code<input required maxLength={100} autoComplete="organization" value={organizationSlug} onChange={event => setOrganizationSlug(event.target.value)} placeholder="e.g. northview-school-a1b2c3d4"/></label>
-        <label>Work email<input type="email" required maxLength={254} autoComplete="username" value={email} onChange={event => setEmail(event.target.value)} placeholder="you@institution.edu"/></label>
-        <label>Password<input type="password" required maxLength={72} autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} placeholder="Your password"/></label>
+        {(!googleOnly||organizationSlug.trim()==="meritiqra-platform")&&<><label>Work email<input type="email" required maxLength={254} autoComplete="username" value={email} onChange={event => setEmail(event.target.value)} placeholder="you@institution.edu"/></label>
+        <label>Password<input type="password" required maxLength={72} autoComplete="current-password" value={password} onChange={event => setPassword(event.target.value)} placeholder="Your password"/></label></>}
         {error && <div role="alert" className="auth-error">{error}</div>}
-        <button className="auth-submit" disabled={busy}>{busy ? "Please wait…" : "Sign in securely"}</button>
-      </form><div className="auth-security"><ShieldCheck size={15}/> Your session uses an HttpOnly account cookie scoped to your institution.</div>
+        {(!googleOnly||organizationSlug.trim()==="meritiqra-platform")&&<button className="auth-submit" disabled={busy}>{busy ? "Please wait…" : "Sign in securely"}</button>}
+      </form><GoogleSignIn key={organizationSlug} workspace={organizationSlug} onAuthenticated={onAuthenticated}/><div className="auth-security"><ShieldCheck size={15}/> Your session uses an HttpOnly account cookie scoped to your institution.</div>
     </div><div className="auth-help">New institution or account? Contact your MeritIQRa platform or school super administrator.</div></section>
   </main>;
 }
