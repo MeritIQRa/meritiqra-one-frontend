@@ -19,7 +19,7 @@ Scope: MERITIQRA_ONE_CURRICULUM_SYLLABUS_TRACKING_PLAYBOOK.md only. The full ERP
 - Family/PTM views, timetable/holiday integration, richer executive aggregates and attribution.
 - Expanded demo fixtures and verified replay/drift behavior.
 - End-to-end browser, accessibility, responsive, PDF render/export and concurrent-workflow checks.
-- Commit/push implementation and deployment verification. Working-tree implementation is not deployed.
+- Full curriculum playbook acceptance remains pending. Current implemented subset was committed, pushed and deployed on 2026-11-03; this is not full playbook completion.
 
 No completion percentage is asserted. A successful build is not evidence that every workflow passes.
 
@@ -28,4 +28,4 @@ No completion percentage is asserted. A successful build is not evidence that ev
 - Latest backend compilation and frontend production build passed.
 - Curriculum-focused Gradle suite: 19 tests, zero failures/errors/skips, including PostgreSQL migration, isolation, version migration and assessment-scope tests against the dedicated local validation database.
 - The migration test exposed a proxied-controller dependency access error; direct dependency injection fixed it and the rerun passed.
-- No live Gemini call, new production deployment, or full browser acceptance is claimed.
+- No live Gemini call or full curriculum browser acceptance is claimed. The implemented subset was subsequently deployed on 2026-11-03.
